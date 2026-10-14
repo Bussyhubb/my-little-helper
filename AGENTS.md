@@ -8,3 +8,13 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+# Architecture rules
+
+- Backend is Lovable Cloud (Postgres + auth). Permissions are enforced by RLS policies using `has_role` / `is_manager` / `has_any_role` security-definer functions; UI hiding is only cosmetic.
+- Roles live only in `user_roles`; the first signup becomes `owner` (trigger `handle_new_user`). Other users are created by managers through server functions in `src/lib/team.functions.ts` (service-role client loaded inside handlers).
+- Sensitive costs live in separate tables (`product_costs`) so agents cannot read them via row policies.
+- Money is `numeric(14,2)` in Naira; never floats in the DB. Format with `naira()` from `src/lib/session.tsx`.
+- Master data is soft-deleted (`is_active`); audit via `audit_row()` trigger into `audit_logs`.
+- Protected pages live under `src/routes/_authenticated/` (client-only gate, `ssr: false`).
+- Build phases: 1 (auth, roles, products, suppliers, customers, settings, audit) is done; later phases (purchasing, stock ledger, bottling, sales, payments, commissions, reports) must add append-only ledger tables with RLS.
