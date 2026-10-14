@@ -63,7 +63,7 @@ function Customers() {
 
   const save = useMutation({
     mutationFn: async (f: Form) => {
-      const row: Record<string, unknown> = {
+      const row: { name: string; phone: string | null; address: string | null; category: Cat; payment_terms: string | null; notes: string | null; credit_limit?: number; assigned_agent?: string | null } = {
         name: f.name.trim(), phone: f.phone.trim() || null, address: f.address.trim() || null,
         category: f.category, payment_terms: f.payment_terms.trim() || null, notes: f.notes.trim() || null,
       };
@@ -73,10 +73,10 @@ function Customers() {
         row.assigned_agent = f.assigned_agent || null;
       }
       if (f.id) {
-        const { error } = await supabase.from("customers").update(row as never).eq("id", f.id);
+        const { error } = await supabase.from("customers").update(row).eq("id", f.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("customers").insert({ ...row, assigned_agent: canAssign ? row.assigned_agent : s.userId } as never);
+        const { error } = await supabase.from("customers").insert({ ...row, assigned_agent: canAssign ? (row.assigned_agent ?? null) : s.userId });
         if (error) throw error;
       }
     },
