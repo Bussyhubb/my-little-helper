@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { LayoutDashboard, Package, Truck, Users, UserCog, Settings, LogOut, Menu, ScrollText } from "lucide-react";
+import { LayoutDashboard, Package, Truck, Users, UserCog, Settings, LogOut, Menu, ScrollText, Boxes, ShoppingCart, FlaskConical } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SessionProvider, useSessionInfo } from "@/lib/session";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,9 @@ function Gate() {
     { to: "/products", label: "Products", icon: Package, show: true },
     { to: "/customers", label: "Customers", icon: Users, show: true },
     { to: "/suppliers", label: "Suppliers", icon: Truck, show: s.isStaff },
+    { to: "/materials", label: "Honey & packaging", icon: Boxes, show: s.isStaff },
+    { to: "/purchases", label: "Purchases", icon: ShoppingCart, show: s.isStaff },
+    { to: "/bottling", label: "Bottling", icon: FlaskConical, show: s.isStaff },
     { to: "/team", label: "Team & roles", icon: UserCog, show: s.isManager },
     { to: "/audit", label: "Audit log", icon: ScrollText, show: s.isManager },
     { to: "/settings", label: "Settings", icon: Settings, show: s.isManager },

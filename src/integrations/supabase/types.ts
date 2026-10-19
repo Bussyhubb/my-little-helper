@@ -47,6 +47,89 @@ export type Database = {
         }
         Relationships: []
       }
+      bottling_inputs: {
+        Row: {
+          id: string
+          material_id: string
+          qty: number
+          run_id: string
+          unit_cost: number
+        }
+        Insert: {
+          id?: string
+          material_id: string
+          qty: number
+          run_id: string
+          unit_cost?: number
+        }
+        Update: {
+          id?: string
+          material_id?: string
+          qty?: number
+          run_id?: string
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bottling_inputs_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bottling_inputs_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "bottling_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bottling_runs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          product_id: string
+          qty_produced: number
+          run_date: string
+          total_cost: number
+          unit_cost: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          qty_produced: number
+          run_date?: string
+          total_cost?: number
+          unit_cost?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          qty_produced?: number
+          run_date?: string
+          total_cost?: number
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bottling_runs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_settings: {
         Row: {
           address: string | null
@@ -134,6 +217,83 @@ export type Database = {
         }
         Relationships: []
       }
+      material_ledger: {
+        Row: {
+          at: string
+          created_by: string | null
+          id: string
+          material_id: string
+          note: string | null
+          qty_change: number
+          ref_id: string | null
+          ref_type: string
+          unit_cost: number
+        }
+        Insert: {
+          at?: string
+          created_by?: string | null
+          id?: string
+          material_id: string
+          note?: string | null
+          qty_change: number
+          ref_id?: string | null
+          ref_type: string
+          unit_cost?: number
+        }
+        Update: {
+          at?: string
+          created_by?: string | null
+          id?: string
+          material_id?: string
+          note?: string | null
+          qty_change?: number
+          ref_id?: string | null
+          ref_type?: string
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_ledger_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materials: {
+        Row: {
+          avg_cost: number
+          created_at: string
+          id: string
+          is_active: boolean
+          kind: Database["public"]["Enums"]["material_kind"]
+          min_stock: number
+          name: string
+          unit: string
+        }
+        Insert: {
+          avg_cost?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: Database["public"]["Enums"]["material_kind"]
+          min_stock?: number
+          name: string
+          unit?: string
+        }
+        Update: {
+          avg_cost?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: Database["public"]["Enums"]["material_kind"]
+          min_stock?: number
+          name?: string
+          unit?: string
+        }
+        Relationships: []
+      }
       product_costs: {
         Row: {
           product_id: string
@@ -155,6 +315,50 @@ export type Database = {
             foreignKeyName: "product_costs_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_ledger: {
+        Row: {
+          at: string
+          created_by: string | null
+          id: string
+          note: string | null
+          product_id: string
+          qty_change: number
+          ref_id: string | null
+          ref_type: string
+          unit_cost: number
+        }
+        Insert: {
+          at?: string
+          created_by?: string | null
+          id?: string
+          note?: string | null
+          product_id: string
+          qty_change: number
+          ref_id?: string | null
+          ref_type: string
+          unit_cost?: number
+        }
+        Update: {
+          at?: string
+          created_by?: string | null
+          id?: string
+          note?: string | null
+          product_id?: string
+          qty_change?: number
+          ref_id?: string | null
+          ref_type?: string
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_ledger_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -276,6 +480,95 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_lines: {
+        Row: {
+          id: string
+          material_id: string
+          purchase_id: string
+          qty: number
+          unit_cost: number
+        }
+        Insert: {
+          id?: string
+          material_id: string
+          purchase_id: string
+          qty: number
+          unit_cost: number
+        }
+        Update: {
+          id?: string
+          material_id?: string
+          purchase_id?: string
+          qty?: number
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_lines_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_lines_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchases: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          purchase_date: string
+          received_at: string | null
+          received_by: string | null
+          reference: string | null
+          status: Database["public"]["Enums"]["purchase_status"]
+          supplier_id: string
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          purchase_date?: string
+          received_at?: string | null
+          received_by?: string | null
+          reference?: string | null
+          status?: Database["public"]["Enums"]["purchase_status"]
+          supplier_id: string
+          total?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          purchase_date?: string
+          received_at?: string | null
+          received_by?: string | null
+          reference?: string | null
+          status?: Database["public"]["Enums"]["purchase_status"]
+          supplier_id?: string
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           address: string | null
@@ -329,9 +622,43 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      material_stock: {
+        Row: {
+          material_id: string | null
+          on_hand: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_ledger_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_stock: {
+        Row: {
+          on_hand: number | null
+          product_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_ledger_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      adjust_material_stock: {
+        Args: { _material_id: string; _note: string; _qty_change: number }
+        Returns: undefined
+      }
+      cancel_purchase: { Args: { _purchase_id: string }; Returns: undefined }
       has_any_role: {
         Args: {
           _roles: Database["public"]["Enums"]["app_role"][]
@@ -348,6 +675,17 @@ export type Database = {
       }
       is_active_user: { Args: { _user_id: string }; Returns: boolean }
       is_manager: { Args: { _user_id: string }; Returns: boolean }
+      post_bottling: {
+        Args: {
+          _inputs: Json
+          _notes: string
+          _product_id: string
+          _qty: number
+          _run_date: string
+        }
+        Returns: string
+      }
+      receive_purchase: { Args: { _purchase_id: string }; Returns: undefined }
     }
     Enums: {
       app_role:
@@ -363,6 +701,8 @@ export type Database = {
         | "supermarket"
         | "distributor"
         | "corporate"
+      material_kind: "raw_honey" | "packaging"
+      purchase_status: "draft" | "received" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -505,6 +845,8 @@ export const Constants = {
         "distributor",
         "corporate",
       ],
+      material_kind: ["raw_honey", "packaging"],
+      purchase_status: ["draft", "received", "cancelled"],
     },
   },
 } as const
