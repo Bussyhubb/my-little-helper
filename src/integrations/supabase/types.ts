@@ -217,6 +217,33 @@ export type Database = {
         }
         Relationships: []
       }
+      locations: {
+        Row: {
+          agent_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name: string
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
       material_ledger: {
         Row: {
           at: string
@@ -294,6 +321,66 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          method: Database["public"]["Enums"]["payment_method"]
+          paid_at: string
+          received_by: string | null
+          reference: string | null
+          reverse_reason: string | null
+          reversed_at: string | null
+          reversed_by: string | null
+          sale_id: string
+          status: Database["public"]["Enums"]["txn_status"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          paid_at?: string
+          received_by?: string | null
+          reference?: string | null
+          reverse_reason?: string | null
+          reversed_at?: string | null
+          reversed_by?: string | null
+          sale_id: string
+          status?: Database["public"]["Enums"]["txn_status"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          paid_at?: string
+          received_by?: string | null
+          reference?: string | null
+          reverse_reason?: string | null
+          reversed_at?: string | null
+          reversed_by?: string | null
+          sale_id?: string
+          status?: Database["public"]["Enums"]["txn_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sale_balances"
+            referencedColumns: ["sale_id"]
+          },
+          {
+            foreignKeyName: "payments_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_costs: {
         Row: {
           product_id: string
@@ -325,6 +412,7 @@ export type Database = {
           at: string
           created_by: string | null
           id: string
+          location_id: string | null
           note: string | null
           product_id: string
           qty_change: number
@@ -336,6 +424,7 @@ export type Database = {
           at?: string
           created_by?: string | null
           id?: string
+          location_id?: string | null
           note?: string | null
           product_id: string
           qty_change: number
@@ -347,6 +436,7 @@ export type Database = {
           at?: string
           created_by?: string | null
           id?: string
+          location_id?: string | null
           note?: string | null
           product_id?: string
           qty_change?: number
@@ -355,6 +445,13 @@ export type Database = {
           unit_cost?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "product_ledger_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "product_ledger_product_id_fkey"
             columns: ["product_id"]
@@ -569,6 +666,192 @@ export type Database = {
           },
         ]
       }
+      sale_line_costs: {
+        Row: {
+          sale_line_id: string
+          unit_cost: number
+        }
+        Insert: {
+          sale_line_id: string
+          unit_cost?: number
+        }
+        Update: {
+          sale_line_id?: string
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sale_line_costs_sale_line_id_fkey"
+            columns: ["sale_line_id"]
+            isOneToOne: true
+            referencedRelation: "sale_lines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sale_lines: {
+        Row: {
+          id: string
+          line_total: number
+          product_id: string
+          qty: number
+          sale_id: string
+          unit_price: number
+        }
+        Insert: {
+          id?: string
+          line_total: number
+          product_id: string
+          qty: number
+          sale_id: string
+          unit_price: number
+        }
+        Update: {
+          id?: string
+          line_total?: number
+          product_id?: string
+          qty?: number
+          sale_id?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sale_lines_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sale_lines_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sale_balances"
+            referencedColumns: ["sale_id"]
+          },
+          {
+            foreignKeyName: "sale_lines_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales: {
+        Row: {
+          agent_id: string
+          created_at: string
+          customer_id: string | null
+          discount: number
+          id: string
+          location_id: string
+          notes: string | null
+          reverse_reason: string | null
+          reversed_at: string | null
+          reversed_by: string | null
+          sale_date: string
+          sale_no: number
+          status: Database["public"]["Enums"]["txn_status"]
+          subtotal: number
+          total: number
+        }
+        Insert: {
+          agent_id?: string
+          created_at?: string
+          customer_id?: string | null
+          discount?: number
+          id?: string
+          location_id: string
+          notes?: string | null
+          reverse_reason?: string | null
+          reversed_at?: string | null
+          reversed_by?: string | null
+          sale_date?: string
+          sale_no?: never
+          status?: Database["public"]["Enums"]["txn_status"]
+          subtotal?: number
+          total?: number
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          customer_id?: string | null
+          discount?: number
+          id?: string
+          location_id?: string
+          notes?: string | null
+          reverse_reason?: string | null
+          reversed_at?: string | null
+          reversed_by?: string | null
+          sale_date?: string
+          sale_no?: never
+          status?: Database["public"]["Enums"]["txn_status"]
+          subtotal?: number
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_transfers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          from_location: string
+          id: string
+          notes: string | null
+          to_location: string
+          transfer_date: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          from_location: string
+          id?: string
+          notes?: string | null
+          to_location: string
+          transfer_date?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          from_location?: string
+          id?: string
+          notes?: string | null
+          to_location?: string
+          transfer_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_transfers_from_location_fkey"
+            columns: ["from_location"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_transfers_to_location_fkey"
+            columns: ["to_location"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           address: string | null
@@ -652,6 +935,50 @@ export type Database = {
           },
         ]
       }
+      product_stock_by_location: {
+        Row: {
+          location_id: string | null
+          on_hand: number | null
+          product_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_ledger_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_ledger_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sale_balances: {
+        Row: {
+          balance: number | null
+          paid: number | null
+          sale_id: string | null
+          total: number | null
+        }
+        Insert: {
+          balance?: never
+          paid?: never
+          sale_id?: string | null
+          total?: number | null
+        }
+        Update: {
+          balance?: never
+          paid?: never
+          sale_id?: string | null
+          total?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       adjust_material_stock: {
@@ -685,7 +1012,49 @@ export type Database = {
         }
         Returns: string
       }
+      post_sale: {
+        Args: {
+          _customer_id: string
+          _discount: number
+          _lines: Json
+          _location_id: string
+          _notes: string
+          _pay_amount: number
+          _pay_method: Database["public"]["Enums"]["payment_method"]
+          _pay_ref: string
+          _sale_date: string
+        }
+        Returns: string
+      }
       receive_purchase: { Args: { _purchase_id: string }; Returns: undefined }
+      record_payment: {
+        Args: {
+          _amount: number
+          _date: string
+          _method: Database["public"]["Enums"]["payment_method"]
+          _ref: string
+          _sale_id: string
+        }
+        Returns: string
+      }
+      reverse_payment: {
+        Args: { _payment_id: string; _reason: string }
+        Returns: undefined
+      }
+      reverse_sale: {
+        Args: { _reason: string; _sale_id: string }
+        Returns: undefined
+      }
+      transfer_stock: {
+        Args: {
+          _date: string
+          _from: string
+          _lines: Json
+          _notes: string
+          _to: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role:
@@ -702,7 +1071,9 @@ export type Database = {
         | "distributor"
         | "corporate"
       material_kind: "raw_honey" | "packaging"
+      payment_method: "cash" | "transfer" | "pos" | "other"
       purchase_status: "draft" | "received" | "cancelled"
+      txn_status: "posted" | "reversed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -846,7 +1217,9 @@ export const Constants = {
         "corporate",
       ],
       material_kind: ["raw_honey", "packaging"],
+      payment_method: ["cash", "transfer", "pos", "other"],
       purchase_status: ["draft", "received", "cancelled"],
+      txn_status: ["posted", "reversed"],
     },
   },
 } as const
