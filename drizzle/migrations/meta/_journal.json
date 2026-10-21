@@ -15,6 +15,13 @@
       "when": 1792442192704,
       "tag": "0001_phase2_purchasing_bottling",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792615822673,
+      "tag": "0002_phase3_locations_sales_payments",
+      "breakpoints": true
     }
   ]
 }
